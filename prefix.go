@@ -127,6 +127,10 @@ func PrefixFromIPNet(net net.IPNet) *Prefix {
 	return &Prefix{IP: dupIP(ip), Length: len}
 }
 
+func IPNetFromPrefix(p *Prefix) net.IPNet {
+	return net.IPNet{IP: p.IP, Mask: net.CIDRMask(p.Length, 32)}
+}
+
 func PrefixFromIPPrefixlen(ip net.IP, len int) *Prefix {
 	return &Prefix{IP: dupIP(ip), Length: len}
 }
