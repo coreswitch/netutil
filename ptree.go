@@ -299,32 +299,40 @@ func (this *Ptree) Release(node *PtreeNode) {
 	this.delReference(node)
 }
 
-func (this *Ptree) AcquireByIPv4(key []byte) *PtreeNode {
-	return this.Acquire(key, 32)
+func (this *Ptree) LookupByMaxBits(key []byte) *PtreeNode {
+	return this.Lookup(key, this.maxKeyBits)
 }
 
 func (this *Ptree) LookupByIPv4(key []byte) *PtreeNode {
 	return this.Lookup(key, 32)
 }
 
-func (this *Ptree) AcquireByIPv6(key []byte) *PtreeNode {
-	return this.Acquire(key, 128)
-}
-
 func (this *Ptree) LookupByIPv6(key []byte) *PtreeNode {
 	return this.Lookup(key, 128)
-}
-
-func (this *Ptree) AcquireByUint32(keyInt uint32) *PtreeNode {
-	key := make([]byte, 4)
-	binary.BigEndian.PutUint32(key, keyInt)
-	return this.Acquire(key, 32)
 }
 
 func (this *Ptree) LookupByUint32(keyInt uint32) *PtreeNode {
 	key := make([]byte, 4)
 	binary.BigEndian.PutUint32(key, keyInt)
 	return this.Lookup(key, 32)
+}
+
+func (this *Ptree) AcquireByMaxBits(key []byte) *PtreeNode {
+	return this.Acquire(key, this.maxKeyBits)
+}
+
+func (this *Ptree) AcquireByIPv4(key []byte) *PtreeNode {
+	return this.Acquire(key, 32)
+}
+
+func (this *Ptree) AcquireByIPv6(key []byte) *PtreeNode {
+	return this.Acquire(key, 128)
+}
+
+func (this *Ptree) AcquireByUint32(keyInt uint32) *PtreeNode {
+	key := make([]byte, 4)
+	binary.BigEndian.PutUint32(key, keyInt)
+	return this.Acquire(key, 32)
 }
 
 func (this *Ptree) AcquireWithItem(key []byte, keyLength int, v interface{}) *PtreeNode {
