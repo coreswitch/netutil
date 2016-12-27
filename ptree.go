@@ -345,6 +345,18 @@ func (this *Ptree) AcquireWithItem(key []byte, keyLength int, v interface{}) *Pt
 	return node
 }
 
+func (this *Ptree) ReleaseByUint32(keyInt uint32) {
+	key := make([]byte, 4)
+	binary.BigEndian.PutUint32(key, keyInt)
+
+	node := this.Lookup(key, 32)
+	if node == nil {
+		return
+	}
+	node.Item = nil
+	this.Release(node)
+}
+
 func (this *Ptree) ReleaseWithItem(key []byte, keyLength int, v interface{}) {
 	node := this.Lookup(key, keyLength)
 	if node == nil {
