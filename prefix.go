@@ -1,4 +1,4 @@
-// Copyright 2016 CoreSwitch
+// Copyright 2016, 2017 CoreSwitch
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -128,7 +128,11 @@ func PrefixFromIPNet(net net.IPNet) *Prefix {
 }
 
 func IPNetFromPrefix(p *Prefix) net.IPNet {
-	return net.IPNet{IP: p.IP, Mask: net.CIDRMask(p.Length, 32)}
+	if len(p.IP) == net.IPv4len {
+		return net.IPNet{IP: p.IP, Mask: net.CIDRMask(p.Length, 32)}
+	} else {
+		return net.IPNet{IP: p.IP, Mask: net.CIDRMask(p.Length, 128)}
+	}
 }
 
 func PrefixFromIPPrefixlen(ip net.IP, len int) *Prefix {
