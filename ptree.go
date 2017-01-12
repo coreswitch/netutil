@@ -1,4 +1,4 @@
-// Copyright 2016 CoreSwitch
+// Copyright 2016, 2017 CoreSwitch
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -293,6 +293,30 @@ func (this *Ptree) Lookup(key []byte, keyLength int) *PtreeNode {
 	}
 
 	return nil
+}
+
+func (this *Ptree) Match(key []byte, keyLength int) *PtreeNode {
+	if keyLength > this.maxKeyBits {
+		return nil
+	}
+
+	node := this.top
+	var matched *PtreeNode
+
+	for node != nil && node.keyLength <= keyLength && this.keyMatch(node.key, node.keyLength, key, keyLength) {
+		if node.refcnt > 0 {
+			matched = node
+		}
+		if node.keyLength == keyLength {
+			break
+		}
+		if bitCheck(key, node.keyLength, this.reverse) {
+			node = node.right
+		} else {
+			node = node.left
+		}
+	}
+	return matched
 }
 
 func (this *Ptree) Release(node *PtreeNode) {
