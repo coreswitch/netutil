@@ -147,3 +147,16 @@ func ParseIPv4(s string) net.IP {
 	}
 	return ip
 }
+
+func SameIp(a net.IP, b net.IP) bool {
+	if a == nil && b == nil {
+		return true
+	}
+	if a == nil && b != nil {
+		return false
+	}
+	if a != nil && b == nil {
+		return false
+	}
+	return a.Equal(b)
+}
