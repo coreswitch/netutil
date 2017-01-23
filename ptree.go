@@ -76,6 +76,10 @@ func (n *PtreeNode) Key() []byte {
 	return n.key
 }
 
+func (n *PtreeNode) KeyLength() int {
+	return n.keyLength
+}
+
 func (this *Ptree) keyMatch(key1 []byte, key1Length int, key2 []byte, key2Length int) bool {
 	if key1Length > key2Length {
 		return false
