@@ -21,6 +21,7 @@ import (
 )
 
 var MaskBits = []byte{0x00, 0x80, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfe, 0xff}
+var MaskReverseBits = []byte{0xff, 0x7f, 0x3f, 0x1f, 0x0f, 0x07, 0x03, 0x01, 0x00}
 
 const (
 	AFI_IP = iota
@@ -33,7 +34,7 @@ type Prefix struct {
 	Length int
 }
 
-func dupIP(ip net.IP) net.IP {
+func CopyIP(ip net.IP) net.IP {
 	dup := make(net.IP, len(ip))
 	copy(dup, ip)
 	return dup
@@ -106,8 +107,25 @@ func (p *Prefix) ApplyMask() {
 	}
 }
 
+func (p *Prefix) ApplyReverseMask() {
+	i := p.Length / 8
+
+	if i >= len(p.IP) {
+		return
+	}
+
+	offset := p.Length % 8
+	p.IP[i] |= MaskReverseBits[offset]
+	i++
+
+	for i < len(p.IP) {
+		p.IP[i] = 0
+		i++
+	}
+}
+
 func (p *Prefix) Copy() *Prefix {
-	return &Prefix{IP: dupIP(p.IP), Length: p.Length}
+	return &Prefix{IP: CopyIP(p.IP), Length: p.Length}
 }
 
 func (p *Prefix) Equal(x *Prefix) bool {
@@ -124,7 +142,7 @@ func PrefixFromIPNet(net net.IPNet) *Prefix {
 		ip = net.IP
 	}
 	len, _ := net.Mask.Size()
-	return &Prefix{IP: dupIP(ip), Length: len}
+	return &Prefix{IP: CopyIP(ip), Length: len}
 }
 
 func IPNetFromPrefix(p *Prefix) net.IPNet {
@@ -136,7 +154,7 @@ func IPNetFromPrefix(p *Prefix) net.IPNet {
 }
 
 func PrefixFromIPPrefixlen(ip net.IP, len int) *Prefix {
-	return &Prefix{IP: dupIP(ip), Length: len}
+	return &Prefix{IP: CopyIP(ip), Length: len}
 }
 
 func ParseIPv4(s string) net.IP {
