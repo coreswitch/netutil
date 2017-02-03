@@ -90,11 +90,11 @@ func (p *Prefix) String() string {
 	return p.IP.String() + "/" + strconv.Itoa(p.Length)
 }
 
-func (p *Prefix) ApplyMask() {
+func (p *Prefix) ApplyMask() *Prefix {
 	i := p.Length / 8
 
 	if i >= len(p.IP) {
-		return
+		return p
 	}
 
 	offset := p.Length % 8
@@ -105,13 +105,14 @@ func (p *Prefix) ApplyMask() {
 		p.IP[i] = 0
 		i++
 	}
+	return p
 }
 
-func (p *Prefix) ApplyReverseMask() {
+func (p *Prefix) ApplyReverseMask() *Prefix {
 	i := p.Length / 8
 
 	if i >= len(p.IP) {
-		return
+		return p
 	}
 
 	offset := p.Length % 8
@@ -122,6 +123,7 @@ func (p *Prefix) ApplyReverseMask() {
 		p.IP[i] = 0
 		i++
 	}
+	return p
 }
 
 func (p *Prefix) Copy() *Prefix {
