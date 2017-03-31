@@ -50,6 +50,10 @@ func (p *Prefix) AFI() int {
 	return AFI_MAX
 }
 
+func (p *Prefix) ByteLength() int {
+	return (p.Length + 7) / 8
+}
+
 func NewPrefixAFI(afi int) *Prefix {
 	switch afi {
 	case AFI_IP:
