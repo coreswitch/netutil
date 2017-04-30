@@ -15,6 +15,7 @@
 package netutil
 
 import (
+	//"encoding/json"
 	"net"
 	"strconv"
 	"strings"
@@ -92,6 +93,10 @@ func ParsePrefix(s string) (*Prefix, error) {
 
 func (p *Prefix) String() string {
 	return p.IP.String() + "/" + strconv.Itoa(p.Length)
+}
+
+func (p *Prefix) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + p.String() + `"`), nil
 }
 
 func (p *Prefix) ApplyMask() *Prefix {
