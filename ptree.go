@@ -323,6 +323,14 @@ func (this *Ptree) Match(key []byte, keyLength int) *PtreeNode {
 	return matched
 }
 
+func (this *Ptree) MatchIPv4(key []byte) *PtreeNode {
+	return this.Match(key, 32)
+}
+
+func (this *Ptree) MatchIPv6(key []byte) *PtreeNode {
+	return this.Match(key, 128)
+}
+
 func (this *Ptree) Release(node *PtreeNode) {
 	this.delReference(node)
 }
