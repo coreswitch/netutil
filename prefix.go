@@ -156,6 +156,16 @@ func PrefixFromIPNet(net net.IPNet) *Prefix {
 	return &Prefix{IP: CopyIP(ip), Length: len}
 }
 
+func PrefixFromNode(n *PtreeNode) *Prefix {
+	ip := make([]byte, len(n.Key()))
+	copy(ip, n.Key())
+	p := &Prefix{
+		IP:     ip,
+		Length: n.KeyLength(),
+	}
+	return p
+}
+
 func IPNetFromPrefix(p *Prefix) net.IPNet {
 	if len(p.IP) == net.IPv4len {
 		return net.IPNet{IP: p.IP, Mask: net.CIDRMask(p.Length, 32)}
