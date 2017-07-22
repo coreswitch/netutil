@@ -65,3 +65,50 @@ func TestPtreeMatch(t *testing.T) {
 		fmt.Println("Not Found")
 	}
 }
+
+type Val struct {
+	Digit int
+}
+
+func TestPtreeDefaultRoute(t *testing.T) {
+	ptree := NewPtree(32)
+
+	net1, _ := ParsePrefix("10.0.0.0/24")
+	n1 := ptree.Acquire(net1.IP, net1.Length)
+	n1.Item = &Val{1}
+
+	net2, _ := ParsePrefix("11.0.0.0/24")
+	n2 := ptree.Acquire(net2.IP, net1.Length)
+	n2.Item = &Val{2}
+
+	net3, _ := ParsePrefix("12.0.0.0/24")
+	n3 := ptree.Acquire(net3.IP, net1.Length)
+	n3.Item = &Val{3}
+
+	net4, _ := ParsePrefix("13.0.0.0/24")
+	n4 := ptree.Acquire(net4.IP, net1.Length)
+	n4.Item = &Val{4}
+
+	netz, _ := ParsePrefix("0.0.0.0/0")
+	nz := ptree.Acquire(netz.IP, net1.Length)
+	nz.Item = &Val{0}
+
+	for n := ptree.Top(); n != nil; n = ptree.Next(n) {
+		if n.Item != nil {
+			val := n.Item.(*Val)
+			fmt.Println(val)
+		}
+	}
+
+	nz = ptree.Acquire(netz.IP, net1.Length)
+	nz.Item = nil
+	ptree.Release(nz)
+	ptree.Release(nz)
+
+	for n := ptree.Top(); n != nil; n = ptree.Next(n) {
+		if n.Item != nil {
+			val := n.Item.(*Val)
+			fmt.Println(val)
+		}
+	}
+}
