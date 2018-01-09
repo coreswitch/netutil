@@ -16,6 +16,7 @@ package netutil
 
 import (
 	//"encoding/json"
+
 	"net"
 	"strconv"
 	"strings"
@@ -198,4 +199,16 @@ func SameIp(a net.IP, b net.IP) bool {
 		return false
 	}
 	return a.Equal(b)
+}
+
+func (p *Prefix) IsDefault() bool {
+	if p.Length != 0 {
+		return false
+	}
+	for _, v := range p.IP {
+		if v != 0 {
+			return false
+		}
+	}
+	return true
 }
